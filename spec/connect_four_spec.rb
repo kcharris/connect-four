@@ -51,16 +51,88 @@ describe Player do
   end
 end
 describe Game do
-  describe "#get_input" do
-    it "Prompts a player for and accepts a single digit number as an input" do
-      player_input = Game.new.get_input
-      expect(player_input).to eql(4.to_s)
-    end
-  end
+  # describe "#get_input" do
+  #   it "Prompts a player for and accepts a single digit number as an input" do
+  #     player_input = Game.new.get_input
+  #     expect(player_input).to eql(4.to_s)
+  #   end
+  # end
   describe "#initialize" do
-    it "Creates instances of the game variables" do
+    it "Creates instance of game variables including Board." do
       game = Game.new
       expect(game.board.show).not_to eql(nil)
+    end
+  end
+  describe "#prompt" do
+    it "Displays the board and aks for input specific to player" do
+      game = Game.new
+      expect(game.prompt(game.turn)).not_to eql(nil)
+    end
+  end
+  describe "#win_check" do
+    it "checks if there is a vertical winning position" do
+      game = Game.new
+      game.board.enter_move(game.player1.piece, 3)
+      game.board.enter_move(game.player1.piece, 3)
+      game.board.enter_move(game.player1.piece, 3)
+      game.board.enter_move(game.player1.piece, 3)
+      expect(game.check_win).to eql(true)
+    end
+    it "checks if there is not a vertical winning position" do
+      game = Game.new
+      game.board.enter_move(game.player1.piece, 3)
+      game.board.enter_move(game.player1.piece, 3)
+      game.board.enter_move(game.player1.piece, 2)
+      game.board.enter_move(game.player1.piece, 3)
+      expect(game.check_win).to eql(false)
+    end
+    it "checks if there is a horizontal winning position." do
+      game = Game.new
+      game.board.enter_move(game.player1.piece, 4)
+      game.board.enter_move(game.player1.piece, 5)
+      game.board.enter_move(game.player1.piece, 6)
+      game.board.enter_move(game.player1.piece, 7)
+      expect(game.check_win).to eql(true)
+    end
+    it "checks if there is a diagonal winning position" do
+      game = Game.new
+      game.board.enter_move(game.player1.piece, 4)
+      game.board.enter_move(game.player2.piece, 3)
+      game.board.enter_move(game.player1.piece, 2)
+      game.board.enter_move(game.player2.piece, 1)
+      game.board.enter_move(game.player1.piece, 3)
+
+      game.board.enter_move(game.player2.piece, 2)
+      game.board.enter_move(game.player1.piece, 1)
+      game.board.enter_move(game.player1.piece, 2)
+      game.board.enter_move(game.player2.piece, 1)
+      game.board.enter_move(game.player1.piece, 1)
+      expect(game.check_win).to eql(true)
+    end
+  end
+  describe "#change_turn" do
+    it "changes a number that determines whose turn it is" do
+      game = Game.new
+      game.change_turn
+      expect(game.turn).to eql(2)
+    end
+  end
+  describe "#show_winner" do
+    it "returns a string with a winner congratulation" do
+      game = Game.new
+      game.board.enter_move(game.player1.piece, 3)
+      game.board.enter_move(game.player1.piece, 3)
+      game.board.enter_move(game.player1.piece, 3)
+      game.board.enter_move(game.player1.piece, 3)
+      expect(game.show_winner(game.turn)).to eql("Winner player1")
+    end
+  end
+  describe "#reset" do
+    it "Resets the board for a new game" do
+      game = Game.new
+      game.board.enter_move(game.player1.piece, 3)
+      game.reset
+      expect(game.board.show).to eql(Board.new.show)
     end
   end
 end
